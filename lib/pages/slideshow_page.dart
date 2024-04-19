@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:slideshow/models/slider_moder.dart';
 
 class SlideShowPage extends StatelessWidget {
   const SlideShowPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: _Slides(),
-            ),
-            _Dots(),
-          ],
+    return ChangeNotifierProvider(
+      create: (_) => SliderModel(),
+      child: const Scaffold(
+        body: Center(
+          child: Column(
+            children: [
+              Expanded(
+                child: _Slides(),
+              ),
+              _Dots(),
+            ],
+          ),
         ),
       ),
     );
@@ -34,9 +39,9 @@ class _Dots extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          _Dot(0),
           _Dot(1),
           _Dot(2),
-          _Dot(3),
         ],
       ),
     );
@@ -49,14 +54,19 @@ class _Dot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 12,
-      width: 12,
+    final int provider = Provider.of<SliderModel>(context).currentPage.round();
+    final double size = (provider != index) ? 10 : 14;
+    return AnimatedContainer(
+      duration: const Duration(
+        milliseconds: 200,
+      ),
+      height: size,
+      width: size,
       margin: const EdgeInsets.symmetric(
         horizontal: 5,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.grey,
+      decoration: BoxDecoration(
+        color: (provider != index) ? Colors.grey : Colors.pink,
         shape: BoxShape.circle,
       ),
     );
@@ -76,7 +86,10 @@ class _SlidesState extends State<_Slides> {
   @override
   void initState() {
     controller = PageController();
-    controller.addListener(() {});
+    controller.addListener(() {
+      Provider.of<SliderModel>(context, listen: false).currentPage =
+          controller.page!;
+    });
     super.initState();
   }
 
@@ -89,6 +102,7 @@ class _SlidesState extends State<_Slides> {
   @override
   Widget build(BuildContext context) {
     return PageView(
+      controller: controller,
       children: const <_Slide>[
         _Slide('assets/svgs/slide-1.svg'),
         _Slide('assets/svgs/slide-2.svg'),

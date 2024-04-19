@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:slideshow/pages/slideshow_page.dart';
+import 'package:slideshow/pages/home.dart';
+//import 'package:slideshow/pages/slideshow_page.dart';
 
 void main() => runApp(const MyApp());
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'SlideShow',
-      home: SlideShowPage(),
+      home: Home(),
     );
   }
 }
